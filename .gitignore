@@ -1,3 +1,7 @@
+# Ambidextrous
+.DS_Store
+build/
+
 # Prerequisites
 *.d
 
