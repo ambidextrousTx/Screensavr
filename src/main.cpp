@@ -53,6 +53,20 @@ int main(int argc, char* argv[]) {
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
+    // Define fullscreen quad vertices
+    // Each vertex is just X, Y (we don't need Z for 2D)
+    float vertices[] = {
+    // Triangle 1
+    -1.0f, -1.0f,  // Bottom-left
+     1.0f, -1.0f,  // Bottom-right
+     1.0f,  1.0f,  // Top-right
+ 
+    // Triangle 2
+    -1.0f, -1.0f,  // Bottom-left
+     1.0f,  1.0f,  // Top-right
+    -1.0f,  1.0f   // Top-left
+    };
+
     // Main loop flag
     bool running = true;
     SDL_Event event;
