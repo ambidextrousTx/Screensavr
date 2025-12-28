@@ -70,6 +70,9 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // Set V-Sync to match the screen refresh rate
+    SDL_GL_SetSwapInterval(1);
+
     // Initialize GLEW
     glewExperimental = GL_TRUE; // Needed for core profile
     GLenum glewError = glewInit();
@@ -174,11 +177,6 @@ int main(int argc, char* argv[]) {
         glBindVertexArray(0);
 
         SDL_GL_SwapWindow(window);
-
-        // Swap buffers (double buffering)
-        SDL_GL_SwapWindow(window);
-
-        SDL_Delay(16); // ~60 FPS
     }
 
     glDeleteVertexArrays(1, &VAO);
