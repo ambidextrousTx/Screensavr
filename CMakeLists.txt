@@ -12,7 +12,10 @@ find_package(GLEW REQUIRED)
 message(STATUS "SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}")
 message(STATUS "GLEW_INCLUDE_DIRS: ${GLEW_INCLUDE_DIRS}")
 
-add_executable(screensaver src/main.cpp)
+add_executable(screensaver 
+    src/main.cpp
+    src/shader.cpp
+)
 
 # More explicit include directories
 target_include_directories(screensaver PRIVATE 

@@ -2,35 +2,7 @@
 #include <SDL2/SDL.h>
 #include <GL/glew.h> // Glew must be added before OpenGL headers
 #include <OpenGL/gl.h>  // macOS OpenGL
-#include <fstream>
-#include <sstream>
-#include <string>
-
-// Helper function to load shader source from file
-std::string loadShaderSource(const char* filepath) {
-    std::ifstream file(filepath);
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
-}
-
-// Helper function to compile a shader
-GLuint compileShader(GLenum type, const char* source) {
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, &source, nullptr);
-    glCompileShader(shader);
-
-    // Check for errors
-    GLint success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        char infoLog[512];
-        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        std::cerr << "Shader compilation failed:\n" << infoLog << std::endl;
-    }
-
-    return shader;
-}
+#include "shader.hpp"
 
 int main(int argc, char* argv[]) {
     // Initialize SDL
@@ -122,32 +94,7 @@ int main(int argc, char* argv[]) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    // Load shader sources
-    std::string vertSource = loadShaderSource("../shaders/vertex.glsl");
-    std::string fragSource = loadShaderSource("../shaders/fragment.glsl");
-
-    // Compile shaders
-    GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertSource.c_str());
-    GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragSource.c_str());
-
-    // Link into a shader program
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    // Check linking errors
-    GLint success;
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        char infoLog[512];
-        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::cerr << "Shader linking failed:\n" << infoLog << std::endl;
-    }
-
-    // Clean up individual shaders (we don't need them after linking)
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader shader("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 
     // Main loop flag
     bool running = true;
@@ -169,7 +116,7 @@ int main(int argc, char* argv[]) {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Use our shader program
-        glUseProgram(shaderProgram);
+        shader.use();
 
         // Draw the quad
         glBindVertexArray(VAO);
@@ -181,7 +128,6 @@ int main(int argc, char* argv[]) {
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteProgram(shaderProgram);
 
     // Cleanup
     SDL_GL_DeleteContext(glContext);
