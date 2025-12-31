@@ -15,6 +15,7 @@ message(STATUS "GLEW_INCLUDE_DIRS: ${GLEW_INCLUDE_DIRS}")
 add_executable(screensaver 
     src/main.cpp
     src/shader.cpp
+    src/renderer.cpp
 )
 
 # More explicit include directories
