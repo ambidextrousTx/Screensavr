@@ -16,6 +16,7 @@ add_executable(screensaver
     src/main.cpp
     src/shader.cpp
     src/renderer.cpp
+    src/app.cpp
 )
 
 # More explicit include directories
