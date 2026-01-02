@@ -1,3 +1,4 @@
+#include <SDL_timer.h>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <GL/glew.h> // Glew must be added before OpenGL headers
@@ -21,11 +22,15 @@ int main(int argc, char* argv[]) {
         // Handle events
         app.pollEvents();
 
+        // Get time in seconds
+        float time = SDL_GetTicks() / 1000.0f;
+
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Use our shader program
         shader.use();
+        shader.setFloat("u_time", time);
         renderer.draw();
 
         app.swapBuffers();
