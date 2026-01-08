@@ -5,23 +5,32 @@ out vec4 FragColor;
 
 uniform float u_time;
 
+// Pseudo-random floating point number
+float random(float x) {
+    return fract(sin(x * 12.9898) * 43758.5453);
+}
+
 void main() {
-    // Normalize position to 0-1 range
     vec2 uv = (fragPos + 1.0) / 2.0;
 
-    // Create a ripple effect from center
-    vec2 center = vec2(0.5, 0.5);
-    float dist = distance(uv, center);
+    // Background - dark blue gradient
+    vec3 skyTop = vec3(0.02, 0.02, 0.08);
+    vec3 skyBottom = vec3(0.05, 0.05, 0.15);
+    vec3 color = mix(skyBottom, skyTop, uv.y);
 
-    // Animated ripple
-    // float ripple = sin(dist * 20.0 - u_time * 3.0);
-    float scanline = sin(uv.y * 100.0 + u_time * 5.0);
+    // Building parameters
+    float numBuildings = 20.0;
+    float buildingIndex = floor(uv.x * numBuildings);
+    float buildingX = fract(uv.x * numBuildings);  // 0-1 within this building
 
-    // Map ripple to color
-    vec3 cyan = vec3(0.0, 0.8, 0.8);
-    vec3 magenta = vec3(0.8, 0.0, 0.8);
-    float t = (scanline + 1.0) / 2.0;  // Map -1,1 to 0,1
-    vec3 color = mix(cyan, magenta, t);
+    // Random height for each building (using building index as seed)
+    float buildingHeight = 0.3 + random(buildingIndex) * 0.6;
+
+    // Is this pixel part of a building?
+    if (uv.y < buildingHeight) {
+        // Building silhouette - dark gray
+        color = vec3(0.1, 0.1, 0.12);
+    }
 
     FragColor = vec4(color, 1.0);
 }
