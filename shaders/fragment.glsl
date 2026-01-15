@@ -30,6 +30,23 @@ void main() {
     if (uv.y < buildingHeight) {
         // Building silhouette - dark gray
         color = vec3(0.1, 0.1, 0.12);
+
+        // Add windows
+        float windowCols = 6.0;  // Windows across
+        float windowRows = 20.0; // Windows up
+
+        float windowX = fract(buildingX * windowCols);
+        float windowY = fract(uv.y * windowRows);
+
+        // Window margin (creates gaps between windows)
+        float margin = 0.2;
+        bool isWindow = windowX > margin && windowX < (1.0 - margin) &&
+            windowY > margin && windowY < (1.0 - margin);
+
+        if (isWindow) {
+            // Window color - cyan glow
+            color = vec3(0.3, 0.6, 0.7);
+        }
     }
 
     FragColor = vec4(color, 1.0);
