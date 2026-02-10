@@ -44,8 +44,29 @@ void main() {
             windowY > margin && windowY < (1.0 - margin);
 
         if (isWindow) {
-            // Window color - cyan glow
-            color = vec3(0.3, 0.6, 0.7);
+            // Unique seed for this window (based on building + window position)
+            float windowSeed = buildingIndex * 100.0 + floor(buildingX * windowCols) + floor(uv.y * windowRows) * 10.0;
+
+            // Random chance this window is lit (70% lit, 30% dark)
+            float litChance = random(windowSeed);
+
+            if (litChance > 0.3) {
+                // Window is lit - vary the brightness
+                float brightness = 0.4 + random(windowSeed + 1.0) * 0.6;  // 0.4 to 1.0
+
+                // Vary the color slightly - more cyan or more white
+                float colorVariation = random(windowSeed + 2.0);
+                vec3 windowColor = mix(
+                    vec3(0.3, 0.6, 0.7),  // Cyan
+                    vec3(0.8, 0.8, 0.9),  // Warm white
+                    colorVariation
+                );
+
+                color = windowColor * brightness;
+            } else {
+                // Window is dark - very dark gray
+                color = vec3(0.05, 0.05, 0.06);
+            }
         }
     }
 
