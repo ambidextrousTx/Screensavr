@@ -54,6 +54,21 @@ void main() {
                 // Window is lit - vary the brightness
                 float brightness = 0.4 + random(windowSeed + 1.0) * 0.6;  // 0.4 to 1.0
 
+                // Only 5% of lit windows flicker
+                float flickerChance = random(windowSeed + 3.0);
+
+                if (flickerChance > 0.95) {
+                    // This window flickers
+                    // Create a flickering pattern based on time
+                    float flickerTime = u_time * (2.0 + random(windowSeed + 4.0) * 4.0);  // Vary speed
+                    float flickerNoise = random(floor(flickerTime + windowSeed));
+
+                    // Sudden on/off: if noise > threshold, dim the light
+                    if (flickerNoise > 0.7) {
+                        brightness *= 0.2;  // Drop to 20% brightness (almost off)
+                    }
+                }
+
                 // Vary the color slightly - more cyan or more white
                 float colorVariation = random(windowSeed + 2.0);
                 vec3 windowColor = mix(
