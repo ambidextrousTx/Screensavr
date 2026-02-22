@@ -85,5 +85,12 @@ void main() {
         }
     }
 
+    // Atmospheric haze
+    float hazeAmount = pow(uv.y, 1.5) * 0.4;  // More haze at top
+    vec3 hazeColor = vec3(0.15, 0.08, 0.2);   // Purple/pink tint
+
+    // Blend the haze over everything
+    color = mix(color, hazeColor, hazeAmount);
+
     FragColor = vec4(color, 1.0);
 }
