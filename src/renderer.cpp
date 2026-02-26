@@ -4,15 +4,15 @@ Renderer::Renderer() {
     // Define fullscreen quad vertices
     // Each vertex is just X, Y (we don't need Z for 2D)
     float vertices[] = {
-    // Triangle 1
-    -1.0f, -1.0f,  // Bottom-left
-     1.0f, -1.0f,  // Bottom-right
-     1.0f,  1.0f,  // Top-right
- 
-    // Triangle 2
-    -1.0f, -1.0f,  // Bottom-left
-     1.0f,  1.0f,  // Top-right
-    -1.0f,  1.0f   // Top-left
+        // Triangle 1
+        -1.0f, -1.0f,  // Bottom-left
+        1.0f, -1.0f,  // Bottom-right
+        1.0f,  1.0f,  // Top-right
+
+        // Triangle 2
+        -1.0f, -1.0f,  // Bottom-left
+        1.0f,  1.0f,  // Top-right
+        -1.0f,  1.0f   // Top-left
     };
 
     // Upload to GPU
@@ -44,8 +44,8 @@ Renderer::~Renderer() {
 }
 
 void Renderer::draw() {
-        // Draw the quad
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);  // 6 vertices = 2 triangles
-        glBindVertexArray(0);
+    // Draw the quad
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);  // 6 vertices = 2 triangles
+    glBindVertexArray(0);
 }

@@ -82,14 +82,14 @@ void Shader::checkCompileErrors(GLuint shader, const std::string& type) {
         if (!success) {
             glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
             std::cerr << "Shader compilation error (" << type << "):\n" 
-                      << infoLog << std::endl;
+                << infoLog << std::endl;
         }
     } else {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(shader, 1024, nullptr, infoLog);
             std::cerr << "Shader program linking error:\n" 
-                      << infoLog << std::endl;
+                << infoLog << std::endl;
         }
     }
 }

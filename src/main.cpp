@@ -1,5 +1,4 @@
 #include <SDL_timer.h>
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <GL/glew.h> // Glew must be added before OpenGL headers
 #include <OpenGL/gl.h>  // macOS OpenGL
@@ -17,9 +16,7 @@ int main(int argc, char* argv[]) {
     Shader shader("../shaders/vertex.glsl", "../shaders/fragment.glsl");
     Renderer renderer;
 
-    // Main loop
     while (app.isRunning()) {
-        // Handle events
         app.pollEvents();
 
         // Get time in seconds
