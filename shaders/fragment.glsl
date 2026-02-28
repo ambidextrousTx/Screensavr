@@ -92,5 +92,11 @@ void main() {
     // Blend the haze over everything
     color = mix(color, hazeColor, hazeAmount);
 
+    // Scanlines
+    float scanlineFrequency = 500.0;  // Number of lines
+    float scanlineIntensity = 0.05;   // How dark the lines are
+    float scanline = sin((uv.y + u_time * 0.1) * scanlineFrequency) * scanlineIntensity; // Moving scanline
+    color -= scanline;  // Darken based on scanline
+
     FragColor = vec4(color, 1.0);
 }
