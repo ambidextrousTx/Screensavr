@@ -83,6 +83,36 @@ void main() {
                 color = vec3(0.05, 0.05, 0.06);
             }
         }
+
+
+        // Neon signs on buildings
+        // Check if this building has a neon sign
+        float neonChance = random(buildingIndex + 50.0);
+
+        if (neonChance > 0.6) {  // 40% of buildings have neon
+            // Determine neon strip height on this building
+            float neonY = 0.2 + random(buildingIndex + 51.0) * 0.5;  // Random height on building
+            float neonThickness = 0.015;  // How thick the strip is
+
+            // Is this pixel part of the neon strip?
+            if (abs(uv.y - neonY) < neonThickness) {
+                // Choose neon color for this building
+                float colorChoice = random(buildingIndex + 52.0);
+                vec3 neonColor;
+
+                if (colorChoice < 0.33) {
+                    neonColor = vec3(0.0, 1.0, 1.0);  // Bright cyan
+                } else if (colorChoice < 0.66) {
+                    neonColor = vec3(1.0, 0.0, 0.8);  // Hot pink/magenta
+                } else {
+                    neonColor = vec3(0.0, 0.5, 1.0);  // Electric blue
+                }
+
+                // Pulse the neon
+                float pulse = 0.7 + sin(u_time * (1.0 + random(buildingIndex + 53.0) * 2.0)) * 0.3;
+                color = neonColor * pulse;
+            }
+        }
     }
 
     // Atmospheric haze
