@@ -10,6 +10,13 @@ float random(float x) {
     return fract(sin(x * 12.9898) * 43758.5453);
 }
 
+float drawScanline(vec2 uv) {
+    float scanlineFrequency = 500.0;  // Number of lines
+    float scanlineIntensity = 0.05;   // How dark the lines are
+    float scanline = sin((uv.y + u_time * 0.1) * scanlineFrequency) * scanlineIntensity; // Moving scanline
+    return scanline;
+}
+
 void main() {
     vec2 uv = (fragPos + 1.0) / 2.0;
 
@@ -122,10 +129,7 @@ void main() {
     // Blend the haze over everything
     color = mix(color, hazeColor, hazeAmount);
 
-    // Scanlines
-    float scanlineFrequency = 500.0;  // Number of lines
-    float scanlineIntensity = 0.05;   // How dark the lines are
-    float scanline = sin((uv.y + u_time * 0.1) * scanlineFrequency) * scanlineIntensity; // Moving scanline
+    float scanline = drawScanline(uv);
     color -= scanline;  // Darken based on scanline
 
     FragColor = vec4(color, 1.0);
