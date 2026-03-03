@@ -18,23 +18,19 @@ float drawScanline(vec2 uv) {
     return scanline;
 }
 
-void main() {
-    vec2 uv = (fragPos + 1.0) / 2.0;
-
-    // Aspect ratio correction
-    float aspect = u_resolution.x / u_resolution.y;
-    vec2 uvCorrected = uv;
-    uvCorrected.x *= aspect;  // Stretch X to match aspect ratio
-
-    // Background - dark blue gradient
+vec3 renderSky(vec2 uv) {
+    // Dark blue gradient
     vec3 skyTop = vec3(0.02, 0.02, 0.08);
     vec3 skyBottom = vec3(0.05, 0.05, 0.15);
-    vec3 color = mix(skyBottom, skyTop, uv.y);
+    return mix(skyBottom, skyTop, uv.y);
+}
 
-    // Moon
+vec3 renderMoon(vec2 uv, vec2 uvCorrected, float aspect) {
     vec2 moonPos = vec2(0.75 * aspect, 0.7);  // upper right
     float moonRadius = 0.08;
     float distToMoon = distance(uvCorrected, moonPos);
+
+    vec3 color = vec3(0.0);
 
     if (distToMoon < moonRadius) {
         // Moon surface - pale yellow
@@ -55,6 +51,20 @@ void main() {
         vec3 glowColor = vec3(0.7, 0.7, 0.5);
         color = mix(color, glowColor, glowStrength * 0.3);
     }
+
+    return color;
+}
+
+void main() {
+    vec2 uv = (fragPos + 1.0) / 2.0;
+
+    // Aspect ratio correction
+    float aspect = u_resolution.x / u_resolution.y;
+    vec2 uvCorrected = uv;
+    uvCorrected.x *= aspect;  // Stretch X to match aspect ratio
+
+    vec3 color = renderSky(uv);
+    color = renderMoon(uv, uvCorrected, aspect);
 
     // Building parameters
     float numBuildings = 20.0;
