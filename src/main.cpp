@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
 
         // Use our shader program
         shader.use();
+        shader.setVec2("u_resolution", 1280.0f, 720.0f);
         shader.setFloat("u_time", time);
         renderer.draw();
 

@@ -4,6 +4,7 @@ in vec2 fragPos;
 out vec4 FragColor;
 
 uniform float u_time;
+uniform vec2 u_resolution;
 
 // Pseudo-random floating point number
 float random(float x) {
@@ -20,10 +21,40 @@ float drawScanline(vec2 uv) {
 void main() {
     vec2 uv = (fragPos + 1.0) / 2.0;
 
+    // Aspect ratio correction
+    float aspect = u_resolution.x / u_resolution.y;
+    vec2 uvCorrected = uv;
+    uvCorrected.x *= aspect;  // Stretch X to match aspect ratio
+
     // Background - dark blue gradient
     vec3 skyTop = vec3(0.02, 0.02, 0.08);
     vec3 skyBottom = vec3(0.05, 0.05, 0.15);
     vec3 color = mix(skyBottom, skyTop, uv.y);
+
+    // Moon
+    vec2 moonPos = vec2(0.75 * aspect, 0.7);  // upper right
+    float moonRadius = 0.08;
+    float distToMoon = distance(uvCorrected, moonPos);
+
+    if (distToMoon < moonRadius) {
+        // Moon surface - pale yellow
+        vec3 moonColor = vec3(0.9, 0.9, 0.7);
+        color = moonColor;
+
+        // Add some subtle texture/craters
+        float craterNoise = random(floor(uv.x * 30.0) + floor(uv.y * 30.0));
+        if (craterNoise > 0.8) {
+            color *= 0.85;  // Darken for craters
+        }
+    }
+
+    // Atmospheric glow around moon
+    float glowRadius = moonRadius * 1.5;
+    if (distToMoon < glowRadius && distToMoon > moonRadius) {
+        float glowStrength = 1.0 - (distToMoon - moonRadius) / (glowRadius - moonRadius);
+        vec3 glowColor = vec3(0.7, 0.7, 0.5);
+        color = mix(color, glowColor, glowStrength * 0.3);
+    }
 
     // Building parameters
     float numBuildings = 20.0;
