@@ -55,17 +55,16 @@ vec3 renderMoon(vec2 uv, vec2 uvCorrected, float aspect) {
     return color;
 }
 
-void main() {
-    vec2 uv = (fragPos + 1.0) / 2.0;
 
-    // Aspect ratio correction
-    float aspect = u_resolution.x / u_resolution.y;
-    vec2 uvCorrected = uv;
-    uvCorrected.x *= aspect;  // Stretch X to match aspect ratio
+vec3 applyAtmosphericHaze(vec3 color, vec2 uv) {
+    float hazeAmount = pow(uv.y, 1.5) * 0.4;  // More haze at top
+    vec3 hazeColor = vec3(0.15, 0.08, 0.2);   // Purple/pink tint
 
-    vec3 color = renderSky(uv);
-    color = renderMoon(uv, uvCorrected, aspect);
+    // Blend the haze over everything
+    return mix(color, hazeColor, hazeAmount);
+}
 
+vec3 drawBuildings(vec3 color, vec2 uv) {
     // Building parameters
     float numBuildings = 20.0;
     float buildingIndex = floor(uv.x * numBuildings);
@@ -132,7 +131,6 @@ void main() {
             }
         }
 
-
         // Neon signs on buildings
         // Check if this building has a neon sign
         float neonChance = random(buildingIndex + 50.0);
@@ -163,12 +161,24 @@ void main() {
         }
     }
 
-    // Atmospheric haze
-    float hazeAmount = pow(uv.y, 1.5) * 0.4;  // More haze at top
-    vec3 hazeColor = vec3(0.15, 0.08, 0.2);   // Purple/pink tint
+    return color;
 
-    // Blend the haze over everything
-    color = mix(color, hazeColor, hazeAmount);
+}
+
+void main() {
+    vec2 uv = (fragPos + 1.0) / 2.0;
+
+    // Aspect ratio correction
+    float aspect = u_resolution.x / u_resolution.y;
+    vec2 uvCorrected = uv;
+    uvCorrected.x *= aspect;  // Stretch X to match aspect ratio
+
+    vec3 color = renderSky(uv);
+    color = renderMoon(uv, uvCorrected, aspect);
+
+    color = drawBuildings(color, uv);
+
+    color = applyAtmosphericHaze(color, uv);
 
     float scanline = drawScanline(uv);
     color -= scanline;  // Darken based on scanline
