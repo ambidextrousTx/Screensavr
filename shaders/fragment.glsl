@@ -176,6 +176,45 @@ vec3 drawBuildings(vec3 color, vec2 uv) {
 
 }
 
+vec3 renderFlyingCar(vec2 uv, vec2 uvCorrected, float aspect) {
+    vec3 color = vec3(0.0);  // Default: no car
+
+    // Car movement
+    float carSpeed = 0.2;
+    float carX = fract(u_time * carSpeed);  // 0 to 1, loops
+    float carY = 0.4 + sin(u_time * 2.0) * 0.05;  // Wobble up/down slightly
+
+    // Car position in aspect-corrected space
+    vec2 carPos = vec2(carX * aspect, carY);
+
+    // Car dimensions
+    float carWidth = 0.04;
+    float carHeight = 0.02;
+
+    // Is this pixel part of the car body?
+    bool isCarBody = abs(uvCorrected.x - carPos.x) < carWidth &&
+        abs(uvCorrected.y - carPos.y) < carHeight;
+
+    if (isCarBody) {
+        // Dark car body
+        color = vec3(0.15, 0.15, 0.2);
+
+        // Add headlights (front of car)
+        float distFromFront = (uvCorrected.x - carPos.x) / carWidth;  // -1 to 1
+        if (distFromFront > 0.6) {  // Front 40% of car
+            float lightPulse = 0.8 + sin(u_time * 10.0) * 0.2;
+            color = vec3(1.0, 1.0, 0.8) * lightPulse;  // Bright white/yellow
+        }
+
+        // Add underglow
+        if (abs(uvCorrected.y - (carPos.y - carHeight)) < 0.003) {  // Bottom edge
+            color = vec3(0.0, 0.8, 1.0);  // Cyan underglow
+        }
+    }
+
+    return color;
+}
+
 void main() {
     vec2 uv = (fragPos + 1.0) / 2.0;
 
@@ -188,6 +227,11 @@ void main() {
     color = renderMoon(uv, uvCorrected, aspect);
 
     color = drawBuildings(color, uv);
+
+    vec3 carColor = renderFlyingCar(uv, uvCorrected, aspect);
+    if (length(carColor) > 0.0) {
+        color = carColor;
+    }
 
     color = applyAtmosphericHaze(color, uv);
 
