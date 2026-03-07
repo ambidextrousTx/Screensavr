@@ -140,8 +140,19 @@ vec3 drawBuildings(vec3 color, vec2 uv) {
             float neonY = 0.2 + random(buildingIndex + 51.0) * 0.5;  // Random height on building
             float neonThickness = 0.015;  // How thick the strip is
 
+            // Random width and position within the building
+            float neonStartX = random(buildingIndex + 54.0) * 0.3;  // Start position (0-0.3 within building)
+            float neonWidth = 0.5 + random(buildingIndex + 55.0) * 0.5;  // Width (0.5 to 1.0 of building width)
+            float neonEndX = neonStartX + neonWidth;
+
             // Is this pixel part of the neon strip?
-            if (abs(uv.y - neonY) < neonThickness) {
+            // Check: right Y height AND within X bounds
+            bool isInNeon = abs(uv.y - neonY) < neonThickness &&
+                buildingX >= neonStartX &&
+                buildingX <= neonEndX;
+
+            // Is this pixel part of the neon strip?
+            if (isInNeon) {
                 // Choose neon color for this building
                 float colorChoice = random(buildingIndex + 52.0);
                 vec3 neonColor;
