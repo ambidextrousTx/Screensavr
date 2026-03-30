@@ -176,13 +176,18 @@ vec3 drawBuildings(vec3 color, vec2 uv) {
 
 }
 
-vec3 renderFlyingCar(vec2 uv, vec2 uvCorrected, float aspect) {
+vec3 renderFlyingCar(vec2 uv, vec2 uvCorrected, float aspect, float carID) {
     vec3 color = vec3(0.0);  // Default: no car
 
+    // Car properties based on ID (so each car is consistent)
+    float carSpeed = 0.1 + random(carID) * 0.15;  // Speed varies 0.1 to 0.25
+    float carLane = 0.3 + random(carID + 1.0) * 0.4;  // Y position 0.3 to 0.7
+    float carSize = 0.7 + random(carID + 2.0) * 0.6;  // Size multiplier 0.7 to 1.3
+    float timeOffset = random(carID + 3.0) * 10.0;  // Start at different times
+
     // Car movement
-    float carSpeed = 0.2;
-    float carX = fract(u_time * carSpeed);  // 0 to 1, loops
-    float carY = 0.4 + sin(u_time * 2.0) * 0.05;  // Wobble up/down slightly
+    float carX = fract((u_time + timeOffset) * carSpeed);  // 0 to 1, loops
+    float carY = carLane + sin((u_time + timeOffset) * 2.0) * 0.03;  // Slight wobble
 
     // Car position in aspect-corrected space
     vec2 carPos = vec2(carX * aspect, carY);
@@ -228,9 +233,11 @@ void main() {
 
     color = drawBuildings(color, uv);
 
-    vec3 carColor = renderFlyingCar(uv, uvCorrected, aspect);
-    if (length(carColor) > 0.0) {
-        color = carColor;
+    for (float carID = 0; carID < 3.0; carID += 1.0) {
+        vec3 carColor = renderFlyingCar(uv, uvCorrected, aspect, carID);
+        if (length(carColor) > 0.0) {
+            color = carColor;
+        }
     }
 
     color = applyAtmosphericHaze(color, uv);
