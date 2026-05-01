@@ -12,15 +12,15 @@ float random(float x) {
 }
 
 // Helper: Generate concentric circles drone formation
-void generateCirclesFormation(out vec2 positions[20]) {
-    for (int i = 0; i < 20; i++) {
-        if (i < 10) {
-            // Inner circle - 10 drones
+void generateCirclesFormation(out vec2 positions[10]) {
+    for (int i = 0; i < 10; i++) {
+        if (i < 5) {
+            // Inner circle - 5 drones
             float angle = (float(i) / 5.0) * 6.28318;
             float radius = 0.08;
             positions[i] = vec2(cos(angle) * radius, sin(angle) * radius * 0.6);
         } else {
-            // Outer circle - 10 drones
+            // Outer circle - 5 drones
             float angle = (float(i - 5) / 5.0) * 6.28318;
             float radius = 0.15;
             positions[i] = vec2(cos(angle) * radius, sin(angle) * radius * 0.6);
@@ -29,11 +29,11 @@ void generateCirclesFormation(out vec2 positions[20]) {
 }
 
 // Helper: Generate arrow drone formation
-void generateArrowFormation(out vec2 positions[20]) {
-    for (int i = 0; i < 20; i++) {
+void generateArrowFormation(out vec2 positions[10]) {
+    for (int i = 0; i < 10; i++) {
         if (i == 0) {
             positions[i] = vec2(0.15, 0.0);  // Tip
-        } else if (i < 12) {
+        } else if (i < 6) {
             // Top edge
             float t = (float(i) - 1.0) / 5.0;
             positions[i] = vec2(-0.1 + t * 0.25, 0.05 + t * 0.08);
@@ -46,8 +46,8 @@ void generateArrowFormation(out vec2 positions[20]) {
 }
 
 // Helper: Generate spiral formation
-void generateSpiralFormation(out vec2 positions[20]) {
-    for (int i = 0; i < 20; i++) {
+void generateSpiralFormation(out vec2 positions[10]) {
+    for (int i = 0; i < 10; i++) {
         float t = float(i) / 9.0;  // 0 to 1
         float angle = t * 6.28318 * 2.0;  // 2 full rotations
         float radius = 0.05 + t * 0.12;   // Expands outward
@@ -56,8 +56,8 @@ void generateSpiralFormation(out vec2 positions[20]) {
 }
 
 // Helper: Generate heart formation
-void generateHeartFormation(out vec2 positions[20]) {
-    for (int i = 0; i < 20; i++) {
+void generateHeartFormation(out vec2 positions[10]) {
+    for (int i = 0; i < 10; i++) {
         float t = float(i) / 9.0;  // 0 to 1
 
         // Parametric heart equation
@@ -80,8 +80,8 @@ vec3 renderDroneSwarm(
     vec2 uv,
     vec2 uvCorrected,
     float aspect,
-    vec2 formationA[20],
-    vec2 formationB[20],
+    vec2 formationA[10],
+    vec2 formationB[10],
     int numDrones,
     vec2 centerPos,
     float timeOffset,
@@ -337,8 +337,8 @@ void main() {
     vec3 color = renderSky(uv);
     color = renderMoon(uv, uvCorrected, aspect);
 
-    vec2 formationA[20];
-    vec2 formationB[20];
+    vec2 formationA[10];
+    vec2 formationB[10];
 
     generateCirclesFormation(formationA);
     generateArrowFormation(formationB);
@@ -356,9 +356,13 @@ void main() {
         vec3(0.3, 0.7, 0.0)
     );
 
+    if (length(droneColor) > 0.0) {
+        color = mix(color, droneColor, 0.8);  // Blend with sky
+    }
+
     // Second swarm - spiral to heart
-    vec2 formationC[20];
-    vec2 formationD[20];
+    vec2 formationC[10];
+    vec2 formationD[10];
     generateSpiralFormation(formationC);
     generateHeartFormation(formationD);
 
@@ -371,12 +375,8 @@ void main() {
         vec3(1.0, 0.3, 0.7)        // Magenta/pink
     );
 
-if (length(droneColor2) > 0.0) {
-    color = mix(color, droneColor2, 0.8);
-}
-
-    if (length(droneColor) > 0.0) {
-        color = mix(color, droneColor, 0.8);  // Blend with sky
+    if (length(droneColor2) > 0.0) {
+        color = mix(color, droneColor2, 0.8);
     }
 
     color = drawBuildings(color, uv);
