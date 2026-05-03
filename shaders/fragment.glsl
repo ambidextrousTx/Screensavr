@@ -6,10 +6,18 @@ out vec4 FragColor;
 uniform float u_time;
 uniform vec2 u_resolution;
 
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
 // Pseudo-random floating point number
 float random(float x) {
     return fract(sin(x * 12.9898) * 43758.5453);
 }
+
+// ============================================================================
+// FORMATION GENERATORS
+// ============================================================================
 
 // Helper: Generate concentric circles drone formation
 void generateCirclesFormation(out vec2 positions[10]) {
@@ -75,6 +83,10 @@ void generateHeartFormation(out vec2 positions[10]) {
         positions[i] = vec2(x * 0.1, -y * 0.08);
     }
 }
+
+// ============================================================================
+// RENDER FUNCTIONS
+// ============================================================================
 
 vec3 renderDroneSwarm(
     vec2 uv,
@@ -325,6 +337,10 @@ vec3 renderFlyingCar(vec2 uv, vec2 uvCorrected, float aspect, float carID) {
 
     return color;
 }
+
+// ============================================================================
+// MAIN
+// ============================================================================
 
 void main() {
     vec2 uv = (fragPos + 1.0) / 2.0;
