@@ -175,6 +175,43 @@ vec3 renderMoon(vec2 uv, vec2 uvCorrected, float aspect) {
     return color;
 }
 
+vec3 applyRain(vec3 color, vec2 uv) {
+    // Number of rain columns
+    float numDrops = 150.0;
+
+    // Which rain column is this pixel in?
+    float dropIndex = floor(uv.x * numDrops);
+    float dropX = fract(uv.x * numDrops);  // Position within this column (0-1)
+
+    // Each drop has random properties
+    float dropSpeed = 0.3 + random(dropIndex) * 0.4;  // 0.3 to 0.7
+    float dropLength = 0.02 + random(dropIndex + 1.0) * 0.08;  // Length of streak
+    float dropThickness = 0.3;  // How much of the column width (0-1)
+
+    // Drop position (falls over time, loops)
+    float dropY = fract(-u_time * dropSpeed + random(dropIndex + 2.0));
+
+    // Is this pixel part of a raindrop streak?
+    bool isInDrop = dropX > (0.5 - dropThickness / 2.0) && 
+                    dropX < (0.5 + dropThickness / 2.0) &&
+                    uv.y < dropY && 
+                    uv.y > (dropY - dropLength);
+
+    if (isInDrop) {
+        // Fade out toward the top of the streak (tail effect)
+        float fadePosition = (-dropY + uv.y) / dropLength;  // 1 at bottom, 0 at top
+        float brightness = 1.0 - fadePosition * 0.7;  // Brighter at bottom
+
+        // Rain color - pale blue-white
+        vec3 rainColor = vec3(0.6, 0.7, 0.8) * brightness;
+
+        // Blend rain over the scene
+        color = mix(color, rainColor, 0.1 * brightness);
+    }
+
+    return color;
+}
+
 
 vec3 applyAtmosphericHaze(vec3 color, vec2 uv) {
     float hazeAmount = pow(uv.y, 1.5) * 0.4;  // More haze at top
@@ -410,6 +447,7 @@ void main() {
 
     float scanline = drawScanline(uv);
     color -= scanline;  // Darken based on scanline
+    color = applyRain(color, uv);
 
     FragColor = vec4(color, 1.0);
 }
