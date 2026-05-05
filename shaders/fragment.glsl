@@ -6,6 +6,8 @@ out vec4 FragColor;
 uniform float u_time;
 uniform vec2 u_resolution;
 
+const float TWO_PI = 6.28318;
+
 // ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
@@ -24,12 +26,12 @@ void generateCirclesFormation(out vec2 positions[10]) {
     for (int i = 0; i < 10; i++) {
         if (i < 5) {
             // Inner circle - 5 drones
-            float angle = (float(i) / 5.0) * 6.28318;
+            float angle = (float(i) / 5.0) * TWO_PI;
             float radius = 0.08;
             positions[i] = vec2(cos(angle) * radius, sin(angle) * radius * 0.6);
         } else {
             // Outer circle - 5 drones
-            float angle = (float(i - 5) / 5.0) * 6.28318;
+            float angle = (float(i - 5) / 5.0) * TWO_PI;
             float radius = 0.15;
             positions[i] = vec2(cos(angle) * radius, sin(angle) * radius * 0.6);
         }
@@ -57,7 +59,7 @@ void generateArrowFormation(out vec2 positions[10]) {
 void generateSpiralFormation(out vec2 positions[10]) {
     for (int i = 0; i < 10; i++) {
         float t = float(i) / 9.0;  // 0 to 1
-        float angle = t * 6.28318 * 2.0;  // 2 full rotations
+        float angle = t * TWO_PI;  // 2 full rotations
         float radius = 0.05 + t * 0.12;   // Expands outward
         positions[i] = vec2(cos(angle) * radius, sin(angle) * radius * 0.6);
     }
@@ -71,7 +73,7 @@ void generateHeartFormation(out vec2 positions[10]) {
         // Parametric heart equation
         // x = 16 * sin^3(t)
         // y = 13*cos(t) - 5*cos(2t) - 2*cos(3t) - cos(4t)
-        float angle = t * 6.28318;  // 0 to 2π
+        float angle = t * TWO_PI;  // 0 to 2π
 
         float x = pow(sin(angle), 3.0);
         float y = (13.0 * cos(angle) 
