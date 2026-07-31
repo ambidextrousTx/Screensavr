@@ -5,11 +5,11 @@ A full screen cyberpunk style screensaver
 * macOS Tahoe, clang pre-installed
 * SDL2 and Glew installed via Homebrew
 
-## Steps to build
+## Steps to build and run
 In the build directory
 
 ```bash
-cmake ..
-make
-screesaver
+$ cmake ..
+$ make
+$ screesaver
 ```
